@@ -1,4 +1,10 @@
-# Classic Tic Tac Toe
+# Emoji Tic Tac Toe
+
+A privacy-first Tic Tac Toe for Android.
+
+No ads. No tracking. No analytics.
+Just a clean, fully offline FOSS game.
+
 
 A free, open-source Android implementation of the classic noughts and crosses game. No advertisements. No telemetry. No internet required. Available on F-Droid.
 
