@@ -24,6 +24,21 @@ FOSS, primary distribution through F-Droid for more trasparent releases.
 
 ---
 
+## Why this exists
+
+Most Tic Tac Toe apps:
+- Show ads  
+- Track usage  
+- Require internet  
+
+This app:
+- No ads  
+- No tracking  
+- Fully offline  
+- Open source
+
+---
+
 ## Features
 
 - Fully offline — no network permission required
