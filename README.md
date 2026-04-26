@@ -140,7 +140,7 @@ The only permission declared is `com.itsfrz.tictactoe.DYNAMIC_RECEIVER_NOT_EXPOR
 ```
 MIT License
 
-Copyright (c) 2026 Faraz Sheikh
+Copyright (c) 2026 Orange Labs
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
