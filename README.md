@@ -5,6 +5,7 @@ A privacy-first Tic Tac Toe for Android.
 No ads. No tracking. No analytics.
 Just a clean, fully offline FOSS game.
 
+<img width="1024" height="500" alt="featureGraphic" src="https://github.com/user-attachments/assets/40ea5778-409d-462c-ab75-08af8d72047a" />
 
 A free, open-source Android implementation of the classic noughts and crosses game. No advertisements. No telemetry. No internet required. Available on F-Droid.
 
