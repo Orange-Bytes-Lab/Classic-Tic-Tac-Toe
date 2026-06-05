@@ -57,7 +57,6 @@ fun BoardTypeComponent(
             Spacer(modifier = Modifier.fillMaxWidth().height(18.dp))
 
             if (isAIMode) {
-                // ✅ FIX 1: Direct reference instead of wrapper lambda
                 DifficultyCapsule(
                     selectedIndex = selectedIndex,
                     onDifficultyEvent = onDifficultyEvent
@@ -125,10 +124,9 @@ private fun DifficultyCapsule(
     selectedIndex: Int,
     onDifficultyEvent: (index: Int) -> Unit
 ) {
-    // ✅ FIX 2: Memoize lambdas to stabilize them
-    val onClickEasy = remember { { onDifficultyEvent(1) } }
-    val onClickMedium = remember { { onDifficultyEvent(2) } }
-    val onClickHard = remember { { onDifficultyEvent(3) } }
+    val onClickEasy = remember { { onDifficultyEvent(0) } }
+    val onClickMedium = remember { { onDifficultyEvent(1) } }
+    val onClickHard = remember { { onDifficultyEvent(2) } }
 
     Row(
         modifier = Modifier
@@ -139,22 +137,22 @@ private fun DifficultyCapsule(
             .border(width = 1.dp, color = ThemeGreen, shape = RoundedCornerShape(20.dp))
     ) {
         CapsuleShape(
+            currentIndex = 0,
+            selectedIndex = selectedIndex,
+            borderColor = ThemePicker.themeButtonBackgroundColor.value,
+            onClickEvent = onClickEasy
+        )
+        CapsuleShape(
             currentIndex = 1,
             selectedIndex = selectedIndex,
-            borderColor = ThemeGreen,
-            onClickEvent = onClickEasy  // ✅ Use memoized callback
+            borderColor = ThemePicker.themeButtonBackgroundColor.value,
+            onClickEvent = onClickMedium
         )
         CapsuleShape(
             currentIndex = 2,
             selectedIndex = selectedIndex,
-            borderColor = ThemePicker.themeButtonBackgroundColor.value,  // ✅ Direct reference
-            onClickEvent = onClickMedium  // ✅ Use memoized callback
-        )
-        CapsuleShape(
-            currentIndex = 3,
-            selectedIndex = selectedIndex,
-            borderColor = ThemePicker.themeButtonBackgroundColor.value,  // ✅ Direct reference
-            onClickEvent = onClickHard  // ✅ Use memoized callback
+            borderColor = ThemePicker.themeButtonBackgroundColor.value,
+            onClickEvent = onClickHard
         )
     }
 }
@@ -170,16 +168,16 @@ private fun CapsuleShape(
         modifier = Modifier
             .fillMaxWidth(
                 when (currentIndex) {
-                    1 -> 0.3F
-                    2 -> 0.4F
+                    0 -> 0.3F
+                    1 -> 0.4F
                     else -> 0.6F
                 }
             )
             .fillMaxHeight()
             .clip(
                 when (currentIndex) {
-                    1 -> Shapes.leftRoundedCorners(12.dp)
-                    3 -> Shapes.rightRoundedCorners(12.dp)
+                    0 -> Shapes.leftRoundedCorners(12.dp)
+                    2 -> Shapes.rightRoundedCorners(12.dp)
                     else -> Shapes.zeroRoundedCorners()
                 }
             )
@@ -198,8 +196,8 @@ private fun CapsuleShape(
                 .fillMaxWidth(1F)
                 .fillMaxHeight(),
             text = when (currentIndex) {
-                1 -> "Easy"
-                2 -> "Medium"
+                0 -> "Easy"
+                1 -> "Medium"
                 else -> "Hard"
             },
             style = headerSubTitle.copy(color = Color.White)

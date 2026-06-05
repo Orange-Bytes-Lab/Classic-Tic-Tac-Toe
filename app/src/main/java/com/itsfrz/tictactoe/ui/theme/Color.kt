@@ -52,3 +52,38 @@ val ThemeDraculaGreenBoardBackground = Color(0xFF282B40)
 val ThemeDraculaGreenButtonBackgroundDisabled = Color(0xFF167E2D)
 val ThemeDraculaGreenButtonBorder = Color(0xFFCDDC39)
 val ThemeDraculaGreenDialogBackground = Color(0xFF282B40)
+
+
+val CosmicDepth     = Color(0xFF0B1A2E)
+val PreDawnIndigo   = Color(0xFF1C2E52)
+val TwilightViolet  = Color(0xFF3B2460)
+val DawnMauve       = Color(0xFF7A3060)
+
+val SaffronHorizon  = Color(0xFFBA4A28)
+val AmberSunrise    = Color(0xFFE8901C)
+val GoldenMoment    = Color(0xFFF5C840)
+val WarmIvory       = Color(0xFFFFF6E0)
+
+val SunGlowBright   = Color(0xFFFFE060)
+val SunGlowMid      = Color(0xFFF5C040)
+val SunGlowDeep     = Color(0xFFE89018)
+
+val StarlightWhite  = Color(0xFFFFFFFF)
+val MandalaWhite    = Color(0x12FFFFFF)
+
+
+// Support
+val OrangePrimary = Color(0xFFFF6A00)
+val OrangeSecondary = Color(0xFFFF9E57)
+
+val NavyPrimary = Color(0xFF202230)
+
+val NavySecondary = Color(0xFFC7BBBB)
+val SurfaceDark = Color(0xFF111111)
+val SurfaceCard = Color(0xFF1A1A1A)
+val TextPrimary = Color.White
+
+// Slot Machine
+val Neon = Color(0xFF36FFB2)
+val ReelBlack = Color(0xFF0D0E12)
+val ReelDark  = Color(0xFF1A1C24)

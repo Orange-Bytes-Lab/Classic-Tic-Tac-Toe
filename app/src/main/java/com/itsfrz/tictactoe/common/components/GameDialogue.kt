@@ -1,9 +1,11 @@
 package com.itsfrz.tictactoe.common.components
 
+import android.content.Context
 import androidx.compose.animation.Animatable
 import androidx.compose.animation.core.EaseInBounce
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -25,6 +27,7 @@ import com.itsfrz.tictactoe.R
 import com.itsfrz.tictactoe.common.enums.GameResult
 import com.itsfrz.tictactoe.common.functionality.GameSound
 import com.itsfrz.tictactoe.common.functionality.ThemePicker
+import com.itsfrz.tictactoe.common.functionality.isScreenTV
 import com.itsfrz.tictactoe.common.viewmodel.CommonViewModel
 import com.itsfrz.tictactoe.ui.theme.*
 import kotlinx.coroutines.delay
@@ -35,12 +38,14 @@ object GameDialogue{
     fun setDialogSound(gameSound: GameSound){
         this.gameSound = gameSound
     }
+
     @Composable
-    fun GameDrawLoseDialogue(
-        gameResult : GameResult,
+    fun GamePurchaseDialogue(
+        context: Context,
+        levelId : Int,
         commonViewModel: CommonViewModel,
         onCloseEvent : () -> Unit,
-        onDialogueButtonClick : () -> Unit,
+        onDialogueEvent : () -> Unit,
     ) {
         val view = LocalView.current
         LaunchedEffect(Unit){
@@ -51,7 +56,7 @@ object GameDialogue{
         }
         Card(
             modifier = Modifier
-                .fillMaxWidth(7f)
+                .fillMaxWidth(.82f)
                 .wrapContentHeight(),
             shape = RoundedCornerShape(8.dp),
             elevation = 10.dp
@@ -59,7 +64,7 @@ object GameDialogue{
             Column(
                 modifier = Modifier
                     .wrapContentSize()
-                    .background(ThemeDialogBackground),
+                    .background(ThemeDialogBackground, shape = RoundedCornerShape(8.dp)),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
@@ -74,7 +79,94 @@ object GameDialogue{
                 ) {
                     IconButton(
                         modifier = Modifier
-                            .size(25.dp)
+                            .size(if (isScreenTV(context)) 45.dp else 25.dp)
+                            .border(
+                                border = BorderStroke(width = 0.8.dp, color = ThemePicker.secondaryColor.value),
+                                shape = RoundedCornerShape(100)
+                            )
+                            .padding(8.dp),
+                        onClick = {
+                            gameSound.clickSound()
+                            commonViewModel.performHapticVibrate(view)
+                            onCloseEvent()
+                        }
+                    ){
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_cross),
+                            contentDescription = "Back Icon",
+                            tint = ThemePicker.secondaryColor.value
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier
+                    .wrapContentWidth()
+                    .height(5.dp))
+                Text(text = "Unlock Level ${levelId}", style = headerTitle.copy(color = ThemePicker.secondaryColor.value, fontSize = 20.sp))
+                Spacer(modifier = Modifier.wrapContentWidth().height(12.dp))
+                Image(modifier = Modifier.size(40.dp), painter = painterResource(R.drawable.ic_gold_coin), contentDescription = "Coins")
+                if (isScreenTV(context)){
+                    Spacer(modifier = Modifier.wrapContentWidth().height(30.dp))
+                }else{
+                    Spacer(modifier = Modifier.wrapContentWidth().height(5.dp))
+                }
+                CustomButton(
+                    isButtonEnabled = true,
+                    onButtonClick = {
+                        gameSound.clickSound()
+                        commonViewModel.performHapticVibrate(view)
+                        onDialogueEvent()
+                                    },
+                    buttonText = "Buy @ \n${levelId * 1000}"
+                )
+                Spacer(modifier = Modifier
+                    .wrapContentWidth()
+                    .height(5.dp))
+            }
+        }
+
+    }
+
+    @Composable
+    fun GameDrawLoseDialogue(
+        context: Context,
+        gameResult : GameResult,
+        commonViewModel: CommonViewModel,
+        onCloseEvent : () -> Unit,
+        onDialogueButtonClick : () -> Unit,
+    ) {
+        val view = LocalView.current
+        LaunchedEffect(Unit){
+            gameSound.triggerPopSound()
+        }
+        LaunchedEffect(Unit){
+            delay(3000)
+        }
+        Card(
+            modifier = Modifier
+                .fillMaxWidth(.82f)
+                .wrapContentHeight(),
+            shape = RoundedCornerShape(8.dp),
+            elevation = 10.dp
+        ) {
+            Column(
+                modifier = Modifier
+                    .wrapContentSize()
+                    .background(ThemeDialogBackground, shape = RoundedCornerShape(8.dp)),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Spacer(modifier = Modifier
+                    .wrapContentWidth()
+                    .height(2.dp))
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 7.dp, end = 7.dp),
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    IconButton(
+                        modifier = Modifier
+                            .size(if (isScreenTV(context)) 45.dp else 25.dp)
                             .border(
                                 border = BorderStroke(width = 0.8.dp, color = ThemePicker.secondaryColor.value),
                                 shape = RoundedCornerShape(100)
@@ -109,9 +201,11 @@ object GameDialogue{
                     }
                     else ->{}
                 }
-                Spacer(modifier = Modifier
-                    .wrapContentWidth()
-                    .height(5.dp))
+                if (isScreenTV(context)){
+                    Spacer(modifier = Modifier.wrapContentWidth().height(30.dp))
+                }else{
+                    Spacer(modifier = Modifier.wrapContentWidth().height(5.dp))
+                }
                 CustomButton(
                     isButtonEnabled = true,
                     onButtonClick = {
@@ -130,9 +224,12 @@ object GameDialogue{
 
     @Composable
     fun GameWinDialogue(
+        context: Context,
+        isAIMode : Boolean = false,
         winnerUsername: String,
         dialogueButtonText : String,
         onCloseEvent : () -> Unit,
+        onFinalEvent : () -> Unit,
         commonViewModel: CommonViewModel,
         onDialogueButtonClick : () -> Unit,
     ){
@@ -145,15 +242,15 @@ object GameDialogue{
         }
         Card(
             modifier = Modifier
-                .fillMaxWidth(7f)
+                .fillMaxWidth(.82f)
                 .wrapContentHeight(),
-            shape = RoundedCornerShape(2.dp),
+            shape = RoundedCornerShape(8.dp),
             elevation = 10.dp
         ) {
             Column(
                 modifier = Modifier
                     .wrapContentSize()
-                    .background(ThemeDialogBackground),
+                    .background(ThemeDialogBackground, shape = RoundedCornerShape(8.dp)),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
@@ -169,7 +266,7 @@ object GameDialogue{
                 ) {
                     IconButton(
                         modifier = Modifier
-                            .size(25.dp)
+                            .size(if (isScreenTV(context)) 45.dp else 25.dp)
                             .border(
                                 border = BorderStroke(width = 0.8.dp, color = ThemePicker.secondaryColor.value),
                                 shape = RoundedCornerShape(100)
@@ -179,6 +276,7 @@ object GameDialogue{
                             gameSound.clickSound()
                             commonViewModel.performHapticVibrate(view)
                             onCloseEvent()
+                            onFinalEvent()
                         }
                     ){
                         Icon(
@@ -199,16 +297,19 @@ object GameDialogue{
                 Spacer(modifier = Modifier
                     .wrapContentWidth()
                     .height(2.dp))
-                Text(text = winnerUsername, style = headerSubTitle.copy(color = ThemePicker.secondaryColor.value, fontSize = 14.sp))
-                Spacer(modifier = Modifier
-                    .wrapContentWidth()
-                    .height(5.dp))
+                Text(text = if(isAIMode) "You Are The Best!" else winnerUsername, style = headerSubTitle.copy(color = ThemePicker.secondaryColor.value, fontSize = 14.sp))
+                if (isScreenTV(context)){
+                    Spacer(modifier = Modifier.wrapContentWidth().height(30.dp))
+                }else{
+                    Spacer(modifier = Modifier.wrapContentWidth().height(5.dp))
+                }
                 CustomButton(
                     isButtonEnabled = true,
                     onButtonClick = {
                         gameSound.clickSound()
                         commonViewModel.performHapticVibrate(view)
                         onDialogueButtonClick()
+                        onFinalEvent()
                                     },
                     buttonText = dialogueButtonText
                 )
@@ -219,8 +320,8 @@ object GameDialogue{
         }
     }
 
-    private @Composable
-    fun AnimatedStarLayout(
+    @Composable
+    private fun AnimatedStarLayout(
         starLayoutBackground : Color,
         starInactiveColor : Color
     ) {
@@ -246,7 +347,7 @@ object GameDialogue{
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(starLayoutBackground),
+                .background(starLayoutBackground,  shape = RoundedCornerShape(8.dp)),
             horizontalArrangement = Arrangement.Center
         ) {
 
@@ -304,15 +405,15 @@ object GameDialogue{
         val view = LocalView.current
         Card(
             modifier = Modifier
-                .fillMaxWidth(7f)
+                .fillMaxWidth(.82f)
                 .wrapContentHeight(),
-            shape = RoundedCornerShape(2.dp),
+            shape = RoundedCornerShape(8.dp),
             elevation = 10.dp
         ) {
             Column(
                 modifier = Modifier
                     .wrapContentSize()
-                    .background(ThemeDialogBackground),
+                    .background(ThemeDialogBackground, shape = RoundedCornerShape(8.dp)),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
@@ -419,7 +520,7 @@ object GameDialogue{
         val view = LocalView.current
         Card(
             modifier = Modifier
-                .fillMaxWidth(.7f)
+                .fillMaxWidth(.82f)
                 .wrapContentHeight(),
             shape = RoundedCornerShape(8.dp),
             elevation = 10.dp,
@@ -428,7 +529,7 @@ object GameDialogue{
             Column(
                 modifier = Modifier
                     .padding(horizontal = 15.dp, vertical = 22.dp)
-                    .background(ThemeDialogBackground),
+                    .background(ThemeDialogBackground, shape = RoundedCornerShape(8.dp)),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
             ) {
